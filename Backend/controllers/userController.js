@@ -1,5 +1,6 @@
 import  bcrypt from "bcrypt"
 import User from "../models/userModel.js"
+import genrateToken from "../config/genrateToken.js";
 
 export const signUp = async (req,res)=>{
     try {
@@ -28,4 +29,33 @@ res.status(201).json({
             }
         )
     }
+}
+export const login = async (req,res) =>{
+  try {
+      const {email,password} = req.body
+    const user = await User.findOne({email})
+    if(!user){
+        return res.status(404).json(
+            {
+                message:"User does not exist"
+            }
+        )}
+        const isMatch = await bcrypt.compare(password,user.password)
+        if(!isMatch){
+        return res.status(404).json({
+            message:"Password does not match"
+        })
+        }
+res.status(201).json({
+    message:"User loged IN ",
+    token:genrateToken(user._id),
+    user
+})
+  } catch (error) {
+  res.status(501).json(
+    {
+        message:error.message
+    }
+  )  
+  }
 }
