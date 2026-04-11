@@ -12,6 +12,11 @@ const noteschema = new mongoose.Schema(
             required: true,
             timestamps: true
         },
+        user:{
+            type: mongoose.Schema.Types.ObjectId,
+            ref:"User",
+            required:true
+        }
 
     }
 )

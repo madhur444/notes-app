@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken"
-const genrateToken = (id) =>{
-    return jwt.sign({id},"mysecretkey",{
-        expiresIn:"7d",
+const genrateToken = (id) => {
+    return jwt.sign({ id }, "mysecretkey", {
+        expiresIn: "7d",
     })
 }
 

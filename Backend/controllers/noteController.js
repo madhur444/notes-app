@@ -7,7 +7,8 @@ export const createNote = async (req, res) => {
         const { tittle, discription } = req.body;
         const note = await Note.create({
             tittle,
-            discription
+            discription,
+            user:req.user._id,
         });
         res.status(200).json({ message: "note created successfully", note })
     } catch (error) {
@@ -59,3 +60,17 @@ export const updateNote = async (req,res)=>{
         })
     }
 }
+export const getMyNotes = async (req, res) => {
+  try {
+    const notes = await Note.find({ user: req.user._id });
+
+    res.status(200).json({
+      message: "Your notes fetched successfully",
+      notes,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
