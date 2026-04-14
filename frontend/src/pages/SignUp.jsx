@@ -1,5 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 function TypingTitle() {
   const text = "Join NoteVault";
@@ -38,7 +39,40 @@ function TypingTitle() {
   );
 }
 
-export default function SignUpPage() {
+export default function SignUp() {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    userName: "",
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  console.log("submit clicked");
+  console.log(formData);
+
+  try {
+    const res = await axios.post(
+      "http://localhost:5999/api/users/signup",
+      formData
+    );
+
+    console.log("SUCCESS:", res.data);
+    navigate("/login");
+  } catch (error) {
+    console.log("ERROR:", error.response?.data || error.message);
+  }
+};
+
   return (
     <div className="min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4">
       <div className="absolute inset-0 bg-gradient-to-br from-[#020617] via-black to-[#0b0b3b]" />
@@ -50,56 +84,75 @@ export default function SignUpPage() {
           <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 text-2xl font-bold shadow-[0_0_25px_rgba(37,99,235,0.7)]">
             N
           </div>
+
           <TypingTitle />
+
           <p className="mt-2 text-sm text-slate-400">
             Create an account to start sharing your knowledge.
           </p>
         </div>
 
-        <div className="rounded-3xl border border-blue-900/40 bg-[#071122]/80 p-8 shadow-2xl backdrop-blur-md">
-          <div className="mb-8 flex flex-col items-center">
-            <div className="flex h-24 w-24 items-center justify-center rounded-full border border-dashed border-blue-500/60 bg-blue-500/5 text-slate-400">
-              📷
-            </div>
-            <p className="mt-3 text-sm text-slate-400">Upload Profile Picture</p>
-          </div>
-
+        <form
+          onSubmit={handleSubmit}
+          className="rounded-3xl border border-blue-900/40 bg-[#071122]/80 p-8 shadow-2xl backdrop-blur-md"
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label className="mb-2 block text-sm text-slate-300">Username</label>
-              <input className="w-full rounded-xl border border-blue-900/40 bg-[#0a1630] px-4 py-3 text-sm outline-none placeholder:text-slate-500" placeholder="@handle" />
+              <label className="mb-2 block text-sm text-slate-300">
+                Username
+              </label>
+              <input
+                type="text"
+                name="userName"
+                value={formData.userName}
+                onChange={handleChange}
+                className="w-full rounded-xl border border-blue-900/40 bg-[#0a1630] px-4 py-3 text-sm outline-none"
+                placeholder="@handle"
+              />
             </div>
+
             <div>
-              <label className="mb-2 block text-sm text-slate-300">Email</label>
-              <input className="w-full rounded-xl border border-blue-900/40 bg-[#0a1630] px-4 py-3 text-sm outline-none placeholder:text-slate-500" placeholder="name@example.com" />
+              <label className="mb-2 block text-sm text-slate-300">
+                Email
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full rounded-xl border border-blue-900/40 bg-[#0a1630] px-4 py-3 text-sm outline-none"
+                placeholder="name@example.com"
+              />
             </div>
-            <div>
-              <label className="mb-2 block text-sm text-slate-300">Password</label>
-              <input type="password" className="w-full rounded-xl border border-blue-900/40 bg-[#0a1630] px-4 py-3 text-sm outline-none" placeholder="••••••••" />
-            </div>
-            <div>
-              <label className="mb-2 block text-sm text-slate-300">Confirm Password</label>
-              <input type="password" className="w-full rounded-xl border border-blue-900/40 bg-[#0a1630] px-4 py-3 text-sm outline-none" placeholder="••••••••" />
+
+            <div className="md:col-span-2">
+              <label className="mb-2 block text-sm text-slate-300">
+                Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full rounded-xl border border-blue-900/40 bg-[#0a1630] px-4 py-3 text-sm outline-none"
+                placeholder="••••••••"
+              />
             </div>
           </div>
 
-          <div className="mt-5">
-            <label className="mb-2 block text-sm text-slate-300">Short Bio (Optional)</label>
-            <textarea rows={4} className="w-full rounded-xl border border-blue-900/40 bg-[#0a1630] px-4 py-3 text-sm outline-none placeholder:text-slate-500" placeholder="Frontend Developer @ Startup | Tech enthusiast" />
-          </div>
-
-          <button className="mt-8 w-full rounded-xl bg-blue-600 py-3 font-semibold shadow-[0_0_20px_rgba(37,99,235,0.65)] transition hover:bg-blue-500">
+          <button
+            type="submit"
+            className="mt-8 w-full rounded-xl bg-blue-600 py-3 font-semibold shadow-[0_0_20px_rgba(37,99,235,0.65)] transition hover:bg-blue-500"
+          >
             Create Account
           </button>
-
-          <p className="mt-5 text-center text-xs text-slate-400">
-            By signing up, you agree to our <span className="text-blue-400">Terms of Service</span> and <span className="text-blue-400">Privacy Policy</span>.
-          </p>
-
-          <p className="mt-6 text-center text-sm text-slate-400">
-            Already have an account? <Link to="/login" className="text-blue-400">Login</Link>
-          </p>
-        </div>
+<p className="mt-6 text-center text-sm text-slate-400">
+  Already have an account?{" "}
+  <Link to="/login" className="text-blue-400">
+    Login
+  </Link>
+</p>
+        </form>
       </div>
     </div>
   );
