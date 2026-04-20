@@ -1,1 +1,1 @@
-<h1>Hey this is my first Fullstack Project</h1>
+<h1>Hey this is my first MERN stack Project</h1>
